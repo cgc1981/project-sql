@@ -1,0 +1,110 @@
+USE proyecto;
+
+INSERT INTO estudiante(estudiante_nombre, estudiante_email)
+VALUES ("Kristine", 'kristine@test.com');
+
+INSERT INTO estudiante(estudiante_nombre, estudiante_email)
+VALUES ("Tiffany", 'tiffany@test.com');
+
+INSERT INTO estudiante(estudiante_nombre, estudiante_email)
+VALUES ("Jordan", 'jordan@test.com');
+
+INSERT INTO profesor(profesor_nombre, profesor_email)
+VALUES ("Profesor1", 'Profesor1@test.com');
+
+INSERT INTO profesor(profesor_nombre, profesor_email)
+VALUES ("Profesor2", 'Profesor2@test.com');
+
+INSERT INTO profesor(profesor_nombre, profesor_email)
+VALUES ("Profesor3", 'Profesor3@test.com');
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Ingles", 1, 1);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Ingles", 2, 1);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Ingles", 3, 1);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Matematicas", 1, 2);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Matematicas", 2, 2);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Matematicas", 3, 2);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Fisica", 1, 3);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Fisica", 2, 3);
+
+INSERT INTO curso(curso_nombre, curso_estudiante_id, curso_profesor_id)
+VALUES ("Fisica", 3, 3);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (1, 1, 1, 4.55);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (2, 1, 2, 7.00);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (3, 1, 3, 6.55);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (1, 2, 4, 4.00);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (2, 2, 5, 5.02);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (3, 2, 6, 9.55);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (1, 3, 7, 4.55);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (2, 3, 8, 6.45);
+
+INSERT INTO calificacion(calificacion_estudiante_id, calificacion_profesor_id, calificacion_curso_id, calificacion_nota)
+VALUES (3, 3, 9, 0.55);
+
+-- La nota media que da cada profesor
+SELECT profesor_id,profesor_nombre, AVG(calificacion_nota) 
+FROM calificacion
+INNER JOIN profesor
+ON calificacion.calificacion_profesor_id = profesor.profesor_id
+GROUP BY calificacion_profesor_id;
+
+-- Las mejores calificaciones para cada estudiante
+SELECT estudiante_id,estudiante_nombre, MAX(calificacion_nota) 
+FROM calificacion
+INNER JOIN estudiante
+ON calificacion.calificacion_estudiante_id = estudiante.estudiante_id
+GROUP BY calificacion_estudiante_id;
+
+-- Agrupar a los estudiantes por los cursos en los que están inscritos
+SELECT estudiante_nombre AS "Nombre", curso_nombre AS "curso"
+FROM estudiante
+JOIN curso
+ON curso.curso_estudiante_id = estudiante.estudiante_id
+ORDER BY curso_nombre;
+
+-- Cree un informe resumido de los cursos y sus calificaciones promedio, ordenados por el curso más desafiante (curso con la calificación promedio más baja) al curso más fácil
+SELECT curso_id,curso_nombre, AVG(calificacion_nota) 
+FROM calificacion
+INNER JOIN curso
+ON calificacion.calificacion_curso_id = curso.curso_id
+GROUP BY calificacion_curso_id
+ORDER BY calificacion_nota DESC;
+
+-- Encontrar qué estudiante y profesor tienen más cursos en común
+SELECT curso_nombre, profesor_nombre AS "profesor", estudiante_nombre AS "estudiante"
+FROM curso
+JOIN profesor
+ON curso.curso_profesor_id = profesor.profesor_id
+JOIN estudiante
+ON curso.curso_estudiante_id = estudiante.estudiante_id;
